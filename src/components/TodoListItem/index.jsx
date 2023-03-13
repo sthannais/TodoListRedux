@@ -1,26 +1,56 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { toggleCompleteAsync, deleteTodo } from "redux/todoSlice";
 import "./styles.css";
 
-const TodoListItem = ({ onCheck, checked, onDelete, label }) => (
-  <div className="todo-list-item">
-    <div
-      tabIndex="0"
-      role="checkbox"
-      aria-checked
-      className="todo-list-item-content"
-    >
-      <input
-        tabIndex="-1"
-        type="checkbox"
-        checked={checked}
-        onChange={onCheck}
-      />
-      <span className={checked ? "todo-list-item-checked" : ""}>{label}</span>
+const TodoListItem = ({ id, completed, onDelete, label }) => {
+  const dispatch = useDispatch();
+
+  const handleCompleteClick = () => {
+    dispatch(
+      toggleCompleteAsync({
+        id: id,
+        completed: !completed,
+      })
+    );
+  };
+
+  const handleDeleteTodo = () => {
+    dispatch(
+      deleteTodo({
+        id: id,
+      })
+    );
+  };
+
+  return (
+    <div className="todo-list-item">
+      <div
+        tabIndex="0"
+        role="checkbox"
+        aria-checked={completed}
+        className="todo-list-item-content"
+        onClick={handleCompleteClick}
+      >
+        <input
+          tabIndex="-1"
+          type="checkbox"
+          checked={completed}
+          onChange={handleCompleteClick}
+        />
+        <span className={completed ? "todo-list-item-checked" : ""}>
+          {label}
+        </span>
+      </div>
+      <button
+        type="button"
+        className="todo-list-item-delete"
+        onClick={handleDeleteTodo}
+      >
+        x
+      </button>
     </div>
-    <button type="button" className="todo-list-item-delete" onClick={onDelete}>
-      x
-    </button>
-  </div>
-);
+  );
+};
 
 export default TodoListItem;
